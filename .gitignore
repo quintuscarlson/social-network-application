@@ -1,41 +1,20 @@
-# Prerequisites
-*.d
+# Qt Creator user files
+*.pro.user
 
-# Compiled Object files
-*.slo
-*.lo
+# Build folders (Debug/Release/etc)
+build-*/
+Qt_6_9_0_for_macOS-Debug/
+
+# macOS system files
+.DS_Store
+
+# Qt generated files
+*.moc
+*.qrc.cpp
 *.o
 *.obj
+Makefile
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
+# Backup/temporary files
+*~
+*.swp
