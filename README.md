@@ -96,26 +96,26 @@ The application models a social network graph internally and persists data using
 - Improve friend suggestions using more advanced network analysis.
 
 ## File Structure
-SocialNetwork/
-│
-├─ src/ # Source code
-│ ├─ main.cpp
-│ ├─ user.h
-│ ├─ user.cpp
-│ ├─ post.h
-│ ├─ post.cpp
-│ ├─ network.h
-│ ├─ network.cpp
-│ ├─ socialnetworkwindow.h
-│ └─ socialnetworkwindow.cpp
-│
-├─ ui/ # Qt Designer UI files
-│ └─ socialnetworkwindow.ui
-│
-├─ data/ # Sample input files
-│ ├─ users.txt
-│ └─ posts.txt
-│
-├─ SocialNetwork.pro # Qt project file
-└─ README.md # Project documentation
+SocialNetwork/  
+│  
+├─ src/ # Source code  
+│ ├─ main.cpp  
+│ ├─ user.h  
+│ ├─ user.cpp  
+│ ├─ post.h  
+│ ├─ post.cpp  
+│ ├─ network.h  
+│ ├─ network.cpp  
+│ ├─ socialnetworkwindow.h  
+│ └─ socialnetworkwindow.cpp  
+│  
+├─ ui/ # Qt Designer UI files  
+│ └─ socialnetworkwindow.ui  
+│  
+├─ data/ # Sample input files  
+│ ├─ users.txt  
+│ └─ posts.txt  
+│  
+├─ SocialNetwork.pro # Qt project file  
+└─ README.md # Project documentation  
 
