@@ -95,7 +95,7 @@ The application models a social network graph internally and persists data using
 - Add search functionality to quickly find users.
 - Improve friend suggestions using more advanced network analysis.
 
-### Originality Note
+## Originality Note
 This project was developed for a class assignment with a minimal starter skeleton provided by the instructor. The design, implementation of the
 social network functionality, user interface, post and reaction handling, and all supporting logic reflect my own work. This README does not 
 claim exclusive authorship over the original skeleton, only over the code and features that I added.
