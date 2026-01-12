@@ -40,7 +40,7 @@ The application models a social network graph internally and persists data using
   - Graph components (groups) detection
 
 ### Data Persistence
-- Users and posts are **read from and written to text files** (users.txt, posts.txt).
+- Users and posts are **read from and written to text files** (`users.txt`, `posts.txt`).
 - Ensures that all changes to profiles, friendships, posts, and reactions are saved.
 
 ## Requirements 
