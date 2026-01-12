@@ -95,27 +95,9 @@ The application models a social network graph internally and persists data using
 - Add search functionality to quickly find users.
 - Improve friend suggestions using more advanced network analysis.
 
-## File Structure
-SocialNetwork/  
-│  
-├─ src/ # Source code  
-│ ├─ main.cpp  
-│ ├─ user.h  
-│ ├─ user.cpp  
-│ ├─ post.h  
-│ ├─ post.cpp  
-│ ├─ network.h  
-│ ├─ network.cpp  
-│ ├─ socialnetworkwindow.h  
-│ └─ socialnetworkwindow.cpp  
-│  
-├─ ui/ # Qt Designer UI files  
-│ └─ socialnetworkwindow.ui  
-│  
-├─ data/ # Sample input files  
-│ ├─ users.txt  
-│ └─ posts.txt  
-│  
-├─ SocialNetwork.pro # Qt project file  
-└─ README.md # Project documentation  
+### Originality Note
+This project was developed for a class assignment with a minimal starter skeleton provided by the instructor. The design, implementation of the
+social network functionality, user interface, post and reaction handling, and all supporting logic reflect my own work. This README does not 
+claim exclusive authorship over the original skeleton, only over the code and features that I added.
+
 
