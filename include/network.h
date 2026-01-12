@@ -1,101 +1,83 @@
 #ifndef NETWORK_H
 #define NETWORK_H
+
 #include <vector>
 #include <string>
 #include "user.h"
 
 class Network {
-	public:
+public:
 
-		//default constructor
-		Network();
+    // Default constructor
+    Network();
 
+    // Stores all users in the network
+    std::vector<User*> users_;
 
+    // Adds a user to the network
+    void addUser(User* user);
 
-		//member variable
-		std::vector<User*> users_;
+    // Creates a connection (friendship) between two users by name
+    int addConnection(std::string s1, std::string s2);
 
-		//pre valid Network object
-		//post a User object is added to the network using the User pointer paramter
-		void addUser(User* user);
+    // Deletes a connection (friendship) between two users by name
+    int deleteConnection(std::string s1, std::string s2);
 
-		//pre valid network object
-		//post connection established between two user objects using data from parameter
-		int addConnection(std::string s1, std::string s2);
+    // Returns the user ID for a given username, or -1 if not found
+    int getId(std::string name);
 
-		//pre valid network object
-		//post connection deleted between two user objects using data from parameter
-		int deleteConnection(std::string s1, std::string s2);
+    // Reads user data from a file into the network
+    int readUsers(const char* fname);
 
-		//pre valid network object
-		//post return int id using name of user from parameter
-		int getId(std::string name);
+    // Writes user data from the network to a file
+    int writeUsers(const char *fname);
 
-		//pre valid network object
-		//post data from a txt file is copied onto the network
-        int readUsers(const char* fname);
+    // Returns the total number of users in the network
+    int numUsers();
 
-		//pre valid network object
-		//post data from network is copied onto a txt file
-        int writeUsers(const char *fname);
+    // Returns a pointer to a user by ID, or nullptr if not found
+    User* getUser(int id);
 
-		//pre valid network object
-		//post int containing number of Users on the network is returned
-		int numUsers();
+    // Returns a vector of user IDs representing the shortest path between two users
+    std::vector<int> shortestPath(int from, int to);
 
-		//pre valid network object
-		//post a pointer to a User object with the paramter id is returned
-		User* getUser(int id);
+    // Returns a vector path from a user to another user at a specified distance
+    std::vector<int> distanceUser(int from, int& to, int distance);
 
-		//pre valid network object from and to are valid User Ids
-		//post a vector containing the path of User Ids that connect the paramters in the shortest way
-		std::vector<int> shortestPath(int from, int to);
+    // Suggests friends for a user, returning the IDs of the best matches
+    std::vector<int> suggestFriends(int who, int& score);
 
-		//pre valid network object from and distance are both valid User Ids or distances
-		//post a vector containing the path between from and a node that has the specified distance is returned
-		std::vector<int> distanceUser(int from, int& to, int distance);
+    // Returns all connected components of the network (groups of users)
+    std::vector<std::vector<int>> groups();
 
-		//pre valid network object and who is a Valid User Id
-		//post a vector of User Ids is returned containing potential friends with the highest scores
-		std::vector<int> suggestFriends(int who, int& score);
+    // Recursive helper for DFS to find connected components
+    void dfs(int cur, std::vector<bool> &visited, std::vector<int> &comp);
 
-		//pre valid network object
-		//post a vector of vectors of User Ids are returned each containing a different component of the graph
-		std::vector<std::vector<int>> groups();
+    // Adds a post to a user; can be incoming or authored by the logged-in user
+    void addPost(int ownerId, std::string message, bool isIncoming, std::string author, bool isPublic, std::vector<std::set<int>> reactions_);
 
-		//pre valid network object, cur is a valid node, visited and comp are valid vectors
-		//post nodes are updated based upon the DFS formula
-		void dfs(int cur, std::vector<bool> &visited, std::vector<int> &comp);
+    // Returns a formatted string of posts for a user
+    std::string getPostsString(int ownerId, int howMany, bool showOnlyPublic);
 
-		//pre valid network object
-		//post adds a post to the specified user object in the network
-		void addPost(int ownerId, std::string message, bool isIncoming, std::string author, bool isPublic, std::vector<std::set<int>> reactions_);
+    // Reads posts from a file and adds them to the appropriate users
+    int readPosts(const char* fname);
 
-		//pre valid network object
-		//post returns the string of messages from the specified user
-		std::string getPostsString(int ownerId, int howMany, bool showOnlyPublic);
+    // Writes all posts in the network to a file
+    int writePosts(const char* fname);
 
-		//pre valid network object
-		//post reads data from a txt file and copies it to the intended User and Post objects
-        int readPosts(const char* fname);
+    // Adds a reaction to a specific post by type (like, heart, laugh)
+    void addReaction(int type, int userId, int postId);
 
-		//pre valid network object
-		//post writes all data from the network posts to a specified txt file
-        int writePosts(const char* fname);
+    // Returns a vector of all users in the network
+    std::vector<User*> getUsers();
 
-        void addReaction(int type, int userId, int postId);
+private:
 
-        std::vector<User*> getUsers();
-        
-	private:
+    // Helper to sort posts by ID
+    static bool mySort(Post* i, Post* j);
 
-		//compares two Ids of post objects used to sort the vector containing all messages on the network
-		static bool mySort(Post* i, Post* j);
-
-		//returns the total number of posts in the network
-		int getTotalPosts();
-
+    // Returns total number of posts in the network
+    int getTotalPosts();
 };
 
 #endif
-
