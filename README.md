@@ -52,15 +52,19 @@ The application models a social network graph internally and persists data using
 **1. Login**
 - Enter your username from `users.txt`.
 - Invalid usernames will display an error.
+
 **2. Profile Navigation**
 - View your own profile or a friend’s profile.
-- Use buttons to return to your own profile.  
+- Use buttons to return to your own profile.
+  
 **3. Friend Management**
 - Add friends using the "Add Friend" button.
-- See friend suggestions in your profile and add them.  
+- See friend suggestions in your profile and add them.
+   
 **4. Posts**
 - Add a new post via the “Add Post” button.
-- Posts can be **public or private** depending on context.  
+- Posts can be **public or private** depending on context.
+  
 **5. Reactions**
 - View reactions on posts.
 - Add reactions to friends’ posts using 👍, ❤️, 😂.
