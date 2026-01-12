@@ -1,99 +1,70 @@
 #ifndef POST_H
 #define POST_H
+
 #include <string>
 #include <vector>
 #include <set>
 
+// Base Post class representing a generic social media post
 class Post {
-
 public:
+    // Default constructor
+    Post();
 
-//default constructor
-	Post();
+    // Constructor with parameters
+    Post(int messageId, int ownerId, std::string message, std::vector<std::set<int>> reactions_);
 
-//constructor with paramaters
-	Post(int messageId, int ownerId, std::string message, std::vector<std::set<int>> reactions_);
+    // Returns a formatted string representing the post and its reactions
+    std::string toString();
 
-//pre valid post object
-//post return string of object values
-	std::string toString();
+    // Getters
+    int getMessageId();
+    int getOwnerId();
+    std::string getMessage();
 
-//pre valid network object
-//post return int messageId	
-	int getMessageId();
+    // Virtual functions for polymorphism (overridden by IncomingPost)
+    virtual std::string getAuthor();
+    virtual bool getIsPublic();
 
-//pre valid post object
-//post return int OwnerId
-	int getOwnerId();
+    // Reaction accessors
+    std::set<int> getLikes();
+    std::set<int> getHearts();
+    std::set<int> getLaughs();
 
-//pre valid post object
-//post return string of message value
-		std::string getMessage();
+    // Add a reaction to the post: type 0=like, 1=heart, 2=laugh
+    void addReaction(int type, int userId);
 
-//pre valid post object
-//post return string of author value
-//virtual keyword used for polymorphism
-	virtual std::string getAuthor();
-
-//pre valid post object
-//post return bool is public
-//virtual keyword used for polymorphism
-	virtual bool getIsPublic();
-
-	std::set<int> getHearts();
-
-	std::set<int> getLaughs();
-
-	std::set<int> getLikes();
-
-	void addReaction(int type, int userId);
-
-	int getNumLikes();
-
-	int getNumHearts();
-
-	int getNumLaughs();
+    // Returns the number of reactions by type
+    int getNumLikes();
+    int getNumHearts();
+    int getNumLaughs();
 
 private:
-
-//private base class member variables
-	int messageId_;
-	int ownerId_;
-	std::string message_;
-	std::vector<std::set<int>> reactions;
+    int messageId_;
+    int ownerId_;
+    std::string message_;
+    std::vector<std::set<int>> reactions; // 0=likes, 1=hearts, 2=laughs
 };
 
-
+// Derived class representing a post that includes author and visibility info
 class IncomingPost : public Post {
-
 public:
+    // Default constructor
+    IncomingPost();
 
-//default constructor
-	IncomingPost();
+    // Constructor with parameters including author and visibility
+    IncomingPost(int messageId, int ownerId, std::string message, bool isPublic, std::string author, std::vector<std::set<int>> reactions_);
 
-//constructor with paramters
-	IncomingPost(int messageId, int ownerId, std::string message, bool isPublic, std::string author, std::vector<std::set<int>> reactions_);
-	
-//pre valid IncomingPost object
-//post return string of object values
-	std::string toString();
+    // Overrides Post::toString() to include author and visibility
+    std::string toString();
 
-//pre valid IncomingPost object
-//post return string of author value
-	std::string getAuthor() override;
-
-//pre valid IncomingPost object
-//post return bool isPublic
-	bool getIsPublic() override;
+    // Overrides base class virtual functions
+    std::string getAuthor() override;
+    bool getIsPublic() override;
 
 private:
-
-//private member variables of inherited class
-	std::string author_;
-	bool isPublic_;
-
+    std::string author_;
+    bool isPublic_;
 };
 
 #endif
-
-
