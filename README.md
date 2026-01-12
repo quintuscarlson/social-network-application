@@ -68,3 +68,16 @@ The application models a social network graph internally and persists data using
 **5. Reactions**
 - View reactions on posts.
 - Add reactions to friends’ posts using 👍, ❤️, 😂.
+
+## Design Notes
+- Object-Oriented Design:
+  - `User` class stores profile information and posts.
+  - `Post` class handles message content, reactions, and visibility.
+  - `IncomingPost` inherits `Post` to include author and visibility metadata.
+  - `Network` class manages users, friend connections, post storage, and graph operations.
+- GUI Design:
+  - Qt Widgets are used for all interface elements.
+  - Buttons and tables dynamically update to display friends, posts, and reactions.
+  - Multiple post selection buttons allow viewing or reacting to recent posts.
+- Persistence:
+  - Changes to users, friendships, and posts are immediately saved to text files for persistence between sessions.
