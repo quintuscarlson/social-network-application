@@ -42,3 +42,8 @@ The application models a social network graph internally and persists data using
 ### Data Persistence
 - Users and posts are **read from and written to text files** (users.txt, posts.txt).
 - Ensures that all changes to profiles, friendships, posts, and reactions are saved.
+
+## Requirements 
+- **C++17** or later
+- **Qt 5** or **Qt 6** (for GUI components)
+- Standard C++ libraries: <vector>, <string>, <set>, <iostream>
