@@ -51,7 +51,7 @@ The application models a social network graph internally and persists data using
 ## How to Use
 **1. Login**
   - Enter your username from `users.txt`.
-  - Invalid usernames will display an error.  
+  - Invalid usernames will display an error.
 **2. Profile Navigation**
   - View your own profile or a friend’s profile.
   - Use buttons to return to your own profile.  
