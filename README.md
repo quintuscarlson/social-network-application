@@ -46,4 +46,4 @@ The application models a social network graph internally and persists data using
 ## Requirements 
 - **C++17** or later
 - **Qt 5** or **Qt 6** (for GUI components)
-- Standard C++ libraries: <vector>, <string>, <set>, <iostream>
+- Standard C++ libraries: `<vector>`, `<string>`, `<set>`, `<iostream>`
