@@ -1,15 +1,16 @@
 #include "network.h"
 #include <iostream>
 #include <fstream>
-#include<sstream>
+#include <sstream>
 #include <string>
 #include <set>
 #include <vector>
 #include <algorithm>
 #include <queue>
 
-Network::Network(){}
+Network::Network() {}  // Default constructor
 
+// Helper function: reads next non-empty line from a file
 bool nextNonEmptyLine(std::ifstream& in, std::string& line) {
     while (std::getline(in, line)) {
         if (!line.empty()) return true;
@@ -17,553 +18,427 @@ bool nextNonEmptyLine(std::ifstream& in, std::string& line) {
     return false;
 }
 
-
-void Network::addUser(User* user){
-	users_.push_back(user);
+// Adds a user to the network
+void Network::addUser(User* user) {
+    users_.push_back(user);
 }
 
-
-User* Network::getUser(int id){
-	for(User* cur : users_){
-		if(cur->getId() == id){
-			return cur;
-		}
-	}
-	return nullptr;
+// Returns a pointer to a user by ID, or nullptr if not found
+User* Network::getUser(int id) {
+    for (User* cur : users_) {
+        if (cur->getId() == id) {
+            return cur;
+        }
+    }
+    return nullptr;
 }
 
-//first checks if both Users exist then updates each User object accordingly
-int Network::addConnection(std::string s1, std::string s2){
+// Adds a connection between two users by name
+// Returns -1 if either user does not exist, 0 on success
+int Network::addConnection(std::string s1, std::string s2) {
+    bool check1 = false;
+    bool check2 = false;
 
-	bool check1 = false;
-	bool check2 = false;
+    for (User* cur : users_) {
+        if (cur->getName() == s1) check1 = true;
+        if (cur->getName() == s2) check2 = true;
+    }
 
-	for(User* cur : users_){
-		if(cur->getName() == s1){
-			check1 = true;
-		}
-		if(cur->getName() == s2){
-			check2 = true;
-		}
+    if (!check1 || !check2) return -1;
 
-	}
+    User* user1 = nullptr;
+    User* user2 = nullptr;
+    int userId1 = -1, userId2 = -1;
 
-	if(check1 == false || check2 == false){
-		return -1;
-	}
+    for (User* cur : users_) {
+        if (cur->getName() == s1) { userId1 = cur->getId(); user1 = cur; }
+        if (cur->getName() == s2) { userId2 = cur->getId(); user2 = cur; }
+    }
 
-	User* user1 = nullptr;
-	User* user2 = nullptr;
-	int userId1 = -1;
-	int userId2 = -1;
+    user1->addFriend(userId2);
+    user2->addFriend(userId1);
 
-
-	for(User* cur : users_){
-		if(cur->getName() == s1){
-			userId1 = cur->getId();
-			user1 = cur;
-		} 
-		if(cur->getName() == s2){
-			userId2 = cur->getId();
-			user2 = cur;
-		}
-	}
-
-	user1->addFriend(userId2);
-	user2->addFriend(userId1);
-
-	return 0;
+    return 0;
 }
 
-//first checks if both Users exist then updates each User object accordingly
-int Network::deleteConnection(std::string s1, std::string s2){
+// Deletes a connection between two users by name
+int Network::deleteConnection(std::string s1, std::string s2) {
+    bool check1 = false;
+    bool check2 = false;
 
-	bool check1 = false;
-	bool check2 = false;
+    for (User* cur : users_) {
+        if (cur->getName() == s1) check1 = true;
+        if (cur->getName() == s2) check2 = true;
+    }
 
-	for(User* cur : users_){
-		if(cur->getName() == s1){
-			check1 = true;
-		}
-		if(cur->getName() == s2){
-			check2 = true;
-		}
+    if (!check1 || !check2) return -1;
 
-	}
+    User* user1 = nullptr;
+    User* user2 = nullptr;
+    int userId1 = -1, userId2 = -1;
 
-	if(check1 == false || check2 == false){
-		return -1;
-	}
+    for (User* cur : users_) {
+        if (cur->getName() == s1) { userId1 = cur->getId(); user1 = cur; }
+        if (cur->getName() == s2) { userId2 = cur->getId(); user2 = cur; }
+    }
 
-	User* user1 = nullptr;
-	User* user2 = nullptr;
-	int userId1 = -1;
-	int userId2 = -1;
+    user1->deleteFriend(userId2);
+    user2->deleteFriend(userId1);
 
-
-	for(User* cur : users_){
-		if(cur->getName() == s1){
-			userId1 = cur->getId();
-			user1 = cur;
-		} 
-		if(cur->getName() == s2){
-			userId2 = cur->getId();
-			user2 = cur;
-		}
-	}
-
-	user1->deleteFriend(userId2);
-	user2->deleteFriend(userId1);
-
-	return 0;
+    return 0;
 }
 
-int Network::getId(std::string name){
-	for(User* cur : users_){
-		if(cur->getName() == name){
-			return cur->getId();
-		}
-	}
-
-	return -1;
+// Returns the ID of a user by name, -1 if not found
+int Network::getId(std::string name) {
+    for (User* cur : users_) {
+        if (cur->getName() == name) return cur->getId();
+    }
+    return -1;
 }
 
-int Network::numUsers(){
-
-	return users_.size();
+// Returns total number of users in the network
+int Network::numUsers() {
+    return users_.size();
 }
 
+// Reads users from a file and populates the network
+int Network::readUsers(const char* fname) {
+    std::string myline;
+    std::ifstream myfile(fname);
 
-//uses sstream and iostream to read input from a file and copy to the network object
-int Network::readUsers(const char* fname){
-	std::string myline;
-	std::ifstream myfile(fname);
+    getline(myfile, myline);  // skip first line (number of users)
 
-	getline(myfile, myline);
+    while (getline(myfile, myline)) {
+        int curId = std::stoi(myline);
 
-	while(getline(myfile, myline)) {
-		
-		int curId = std::stoi(myline);
+        getline(myfile, myline);
+        std::string curName = myline;
+        curName.erase(std::remove(curName.begin(), curName.end(), '\t'), curName.end());
 
-		getline(myfile, myline);
-		std::string curName = myline;
-		curName.erase(std::remove(curName.begin(), curName.end(), '\t'),curName.end());
+        getline(myfile, myline);
+        int curYear = std::stoi(myline);
 
+        getline(myfile, myline);
+        int curZip = std::stoi(myline);
 
-		getline(myfile, myline);
-		int curYear = std::stoi(myline);
+        getline(myfile, myline);
+        std::stringstream ss(myline);
+        std::set<int> curFriends;
+        int friendId;
 
+        while (ss >> friendId) {
+            curFriends.insert(friendId);
+        }
 
-		getline(myfile, myline);
-		int curZip = std::stoi(myline);
-
-		getline(myfile, myline);
-		std::stringstream ss(myline);
-		std::set<int> curFriends;
-		int friendId;
-
-		while(ss >> friendId){
-			curFriends.insert(friendId);
-		}
-
-		User* curUser = new User(curId, curName, curYear, curZip, curFriends);
-		users_.push_back(curUser);
-	}
-	return 0;
+        User* curUser = new User(curId, curName, curYear, curZip, curFriends);
+        users_.push_back(curUser);
+    }
+    return 0;
 }
 
-//uses ofstream to copy data from User object to a txt file
-int Network::writeUsers(const char* fname){
-	std::ofstream myfile(fname);
+// Writes user data to a file
+int Network::writeUsers(const char* fname) {
+    std::ofstream myfile(fname);
+    myfile << numUsers() << "\n";
 
-	myfile << numUsers() << "\n";
+    for (User* cur : users_) {
+        myfile << cur->getId() << "\n";
+        myfile << "\t" << cur->getName() << "\n";
+        myfile << "\t" << cur->getYear() << "\n";
+        myfile << "\t" << cur->getZip() << "\n";
 
-	for(User* cur : users_){
-		myfile << cur->getId() << "\n";
-		myfile << "\t" << cur->getName() << "\n";
-		myfile << "\t" << cur->getYear() << "\n";
-		myfile << "\t" << cur->getZip() << "\n";
+        std::set<int> curFriends = cur->getFriends();
+        myfile << "\t";
+        for (int cur2 : curFriends) myfile << cur2 << " ";
+        myfile << "\n";
+    }
 
-		std::set<int> curFriends = cur->getFriends();
-		myfile << "\t";
-		 for (int cur2 : curFriends){
-		 	myfile << cur2 << " ";
-		 }
-		 myfile << "\n";
-	}
-
-	return 0;
+    return 0;
 }
 
-//performs a BFS algorithm to determine the shortest path between two nodes in the network
-std::vector<int> Network::shortestPath(int from, int to){
-	int vSize = users_.size();
+// Finds the shortest path between two users using BFS
+std::vector<int> Network::shortestPath(int from, int to) {
+    int vSize = users_.size();
+    std::vector<bool> visited(vSize, false);
+    std::vector<int> connection(vSize, -1);
+    std::queue<int> q;
 
-	std::vector<bool> visited(vSize, false);
-	std::vector<int> connection(vSize, -1);
-	std::queue<int> q;
+    visited[from] = true;
+    q.push(from);
 
-	visited[from] = true;
-	q.push(from);
+    while (!q.empty()) {
+        int cur = q.front(); q.pop();
+        std::set<int> friends = getUser(cur)->getFriends();
 
-	while(!q.empty()){
-		int cur = q.front();
-		q.pop();
+        for (int i : friends) {
+            if (!visited[i]) {
+                visited[i] = true;
+                connection[i] = cur;
+                q.push(i);
+            }
+        }
+    }
 
-		std::set<int> friends = getUser(cur)->getFriends();
+    std::vector<int> result;
+    int path = to;
 
-		for(int i : friends){
-			if(!visited[i]) {
-				visited[i] = true;
-				connection[i] = cur;
-				q.push(i);
-			}
-		}
-	}
-
-	std::vector<int> result;
-	int path = to;
-
-	while(connection[path] != -1){
-		result.push_back(path);
-		path = connection[path];
-	}
-	result.push_back(from);
-
-	std::reverse(result.begin(), result.end());
-
-	return result;
+    while (connection[path] != -1) {
+        result.push_back(path);
+        path = connection[path];
+    }
+    result.push_back(from);
+    std::reverse(result.begin(), result.end());
+    return result;
 }
 
-//performs a BFS algorithm to return a path to a node that is exactly distance edges away from the paramter node: from
-std::vector<int> Network::distanceUser(int from, int& to, int distance){
-	int vSize = users_.size();
+// Returns a path to a user exactly 'distance' away using BFS
+std::vector<int> Network::distanceUser(int from, int& to, int distance) {
+    int vSize = users_.size();
+    std::vector<bool> visited(vSize, false);
+    std::vector<int> dist(vSize, -1);
+    std::queue<int> q;
 
-	std::vector<bool> visited(vSize, false);
-	std::vector<int> dist(vSize, -1);
-	std::queue<int> q;
+    visited[from] = true;
+    dist[from] = 0;
+    q.push(from);
 
-	visited[from] = true;
-	dist[from] = 0;
-	q.push(from);
+    while (!q.empty()) {
+        int cur = q.front(); q.pop();
+        std::set<int> friends = getUser(cur)->getFriends();
 
-	while(!q.empty()){
-		int cur = q.front();
-		q.pop();
+        for (int i : friends) {
+            if (!visited[i]) {
+                visited[i] = true;
+                dist[i] = dist[cur] + 1;
+                q.push(i);
 
-		std::set<int> friends = getUser(cur)->getFriends();
+                if (dist[i] == distance) {
+                    to = i;
+                    return shortestPath(from, to);
+                }
+            }
+        }
+    }
 
-		for(int i : friends){
-			if(!visited[i]) {
-				visited[i] = true;
-				dist[i] = dist[cur] + 1;
-				q.push(i);
-
-				if(dist[i] == distance){
-					to = i;
-					return shortestPath(from, to);
-				}
-			}
-		}
-	}
-
-	to = -1;
-	return std::vector<int>();
+    to = -1;
+    return std::vector<int>();
 }
 
-//uses a BFS to determine friends of friends and then determines each potential friends score so that it can return a vector of friend suggestions
-std::vector<int> Network::suggestFriends(int who, int& score){
-	int vSize = users_.size();
+// Suggests friends for a user based on friends-of-friends and mutual connections
+std::vector<int> Network::suggestFriends(int who, int& score) {
+    int vSize = users_.size();
+    std::vector<bool> visited(vSize, false);
+    std::vector<int> dist(vSize, -1);
+    std::queue<int> q;
 
-	std::vector<bool> visited(vSize, false);
-	std::vector<int> dist(vSize, -1);
-	std::queue<int> q;
+    visited[who] = true;
+    dist[who] = 0;
+    q.push(who);
 
-	visited[who] = true;
-	dist[who] = 0;
-	q.push(who);
+    while (!q.empty()) {
+        int cur = q.front(); q.pop();
+        std::set<int> friends = getUser(cur)->getFriends();
 
-	while(!q.empty()){
-		int cur = q.front();
-		q.pop();
+        for (int i : friends) {
+            if (!visited[i]) {
+                visited[i] = true;
+                dist[i] = dist[cur] + 1;
+                q.push(i);
+            }
+        }
+    }
 
-		std::set<int> friends = getUser(cur)->getFriends();
+    std::vector<int> potentialFriends;
+    std::vector<int> scores;
+    int maxScore = 0;
 
-		for(int i : friends){
-			if(!visited[i]) {
-				visited[i] = true;
-				dist[i] = dist[cur] + 1;
-				q.push(i);
-			}
-		}
-	}
+    // Collect users at distance 2 (friends-of-friends)
+    for (int j = 0; j < dist.size(); j++) {
+        if (dist[j] == 2) potentialFriends.push_back(users_[j]->getId());
+    }
 
-	std::vector<int> potentialFriends;
-	std::vector<int> scores;
-	int maxScore = 0;
+    // Score potential friends based on mutual friends
+    for (int i : potentialFriends) {
+        int s = 0;
+        std::set<int> curFriends = getUser(i)->getFriends();
+        std::set<int> whoFriends = getUser(who)->getFriends();
+        for (int j : curFriends) {
+            for (int k : whoFriends) {
+                if (j == k) s++;
+            }
+        }
+        scores.push_back(s);
+        if (s > maxScore) maxScore = s;
+    }
 
-	for(int j = 0; j < dist.size(); j++){
-		if(dist[j]==2){
-			potentialFriends.push_back(users_[j]->getId());
-		}
-	}
+    // Return best matches
+    std::vector<int> bestMatches;
+    for (int g = 0; g < scores.size(); g++) {
+        if (scores[g] == maxScore) bestMatches.push_back(potentialFriends[g]);
+    }
 
-	for(int i : potentialFriends){
-		int s = 0;
-		std::set<int> curFriends = getUser(i)->getFriends();
-		std::set<int> whoFriends = getUser(who)->getFriends();
-		for(int j : curFriends){
-			for(int k : whoFriends){
-				if(j==k){
-					s++;
-				}
-			}
-		}
-		scores.push_back(s);
-		if(s > maxScore){
-			maxScore = s;
-		}
-	}
-
-	std::vector<int> bestMatches;
-	for(int g = 0; g < scores.size(); g++){
-		if(scores[g] == maxScore){
-			bestMatches.push_back(potentialFriends[g]);
-		}
-	}
-
-	score = maxScore;
-	return bestMatches;
+    score = maxScore;
+    return bestMatches;
 }
 
-//uses the DFS function to perform a DFS algorithm on the graph and return a vector of different components with their respective User Ids
-std::vector<std::vector<int>> Network::groups(){
-	int vSize = users_.size();
+// Returns all connected groups in the network using DFS
+std::vector<std::vector<int>> Network::groups() {
+    int vSize = users_.size();
+    std::vector<bool> visited(vSize, false);
+    std::vector<std::vector<int>> result;
 
-	std::vector<bool> visited(vSize, false);
-	std::vector<std::vector<int>> result;
+    for (int j = 0; j < users_.size(); j++) {
+        if (!visited[j]) {
+            std::vector<int> comp;
+            dfs(j, visited, comp);
+            result.push_back(comp);
+        }
+    }
 
-	for (int j = 0; j < users_.size(); j++){
-		if (!visited[j]){
-			std::vector<int> comp;
-			dfs(j, visited, comp);
-			result.push_back(comp);
-		}
-	}
-
-	return result;
+    return result;
 }
 
-//uses recursion to perform a DFS on the network
-void Network::dfs(int cur, std::vector<bool> &visited, std::vector<int> &comp){
-	visited[cur]=true;
-	comp.push_back(cur);
+// Recursive DFS helper function
+void Network::dfs(int cur, std::vector<bool> &visited, std::vector<int> &comp) {
+    visited[cur] = true;
+    comp.push_back(cur);
 
-	std::set<int> curFriends = getUser(cur)->getFriends();
-
-	for(int j : curFriends){
-		if(!visited[j]){
-			dfs(j, visited, comp);
-		}
-	}
-
+    std::set<int> curFriends = getUser(cur)->getFriends();
+    for (int j : curFriends) {
+        if (!visited[j]) dfs(j, visited, comp);
+    }
 }
 
-void Network::addPost(int ownerId, std::string message, bool isIncoming, std::string author, bool isPublic, std::vector<std::set<int>> reactions_){
-	if(isIncoming){
-		int messageId = getTotalPosts();
+// Adds a post to a user's feed (incoming or outgoing)
+void Network::addPost(int ownerId, std::string message, bool isIncoming, std::string author, bool isPublic, std::vector<std::set<int>> reactions_) {
+    int messageId = getTotalPosts();
+    if (isIncoming) {
         IncomingPost* cur = new IncomingPost(messageId, ownerId, message, isPublic, author, reactions_);
-		getUser(ownerId)->addPost(cur);
-	}
-	else{
-		int messageId = getTotalPosts();
+        getUser(ownerId)->addPost(cur);
+    } else {
         Post* cur = new Post(messageId, ownerId, message, reactions_);
-		getUser(ownerId)->addPost(cur);
-	}
+        getUser(ownerId)->addPost(cur);
+    }
 }
 
-int Network::getTotalPosts(){
-	int count = 0;
-
-	for (User* i : users_){
-		std::vector<Post*> cur = i->getPosts();
-		count += cur.size();
-	}
-
-	return count;
+// Returns total number of posts in the network
+int Network::getTotalPosts() {
+    int count = 0;
+    for (User* i : users_) {
+        std::vector<Post*> cur = i->getPosts();
+        count += cur.size();
+    }
+    return count;
 }
 
-
-std::string Network::getPostsString(int ownerId, int howMany, bool showOnlyPublic){
-	return getUser(ownerId)->getPostsString(howMany, showOnlyPublic);
+// Returns string representation of posts for a user
+std::string Network::getPostsString(int ownerId, int howMany, bool showOnlyPublic) {
+    return getUser(ownerId)->getPostsString(howMany, showOnlyPublic);
 }
 
-int Network::readPosts(const char* fname){
+// Reads posts from a file and populates the network
+int Network::readPosts(const char* fname) {
+    std::string myline;
+    std::ifstream myfile(fname);
+    if (!myfile.is_open()) return -1;
 
-	std::string myline;
-	std::ifstream myfile(fname);
-
-	if(!myfile.is_open()){
-		return -1;
-	}
-
-	getline(myfile, myline);
+    getline(myfile, myline);
     int totalPosts = std::stoi(myline);
-	int count = 0;
+    int count = 0;
 
-	while(count < totalPosts) {
+    while (count < totalPosts) {
+        getline(myfile, myline); // message ID
+        getline(myfile, myline); // message content
+        std::string curMessage = myline;
+        curMessage.erase(std::remove(curMessage.begin(), curMessage.end(), '\t'), curMessage.end());
 
-		getline(myfile, myline);
-        getline(myfile, myline);
-		std::string curMessage = myline;
-		curMessage.erase(std::remove(curMessage.begin(), curMessage.end(), '\t'),curMessage.end());
-
-
-        getline(myfile, myline);
+        getline(myfile, myline); // owner ID
         myline.erase(std::remove_if(myline.begin(), myline.end(), ::isspace), myline.end());
         int curOwnerId = std::stoi(myline);
 
-		std::stringstream ss;
-		std::set<int> curLikes;
-		int likesId;
+        std::stringstream ss;
+        std::set<int> curLikes, curHearts, curLaughs;
+        int id;
 
-		if(nextNonEmptyLine(myfile, myline)){
-			ss = std::stringstream(myline);
-		while(ss >> likesId){
-			curLikes.insert(likesId);
-		}}
+        if (nextNonEmptyLine(myfile, myline)) { ss = std::stringstream(myline); while (ss >> id) curLikes.insert(id); }
+        if (nextNonEmptyLine(myfile, myline)) { ss = std::stringstream(myline); while (ss >> id) curHearts.insert(id); }
+        if (nextNonEmptyLine(myfile, myline)) { ss = std::stringstream(myline); while (ss >> id) curLaughs.insert(id); }
 
-		std::set<int> curHearts;
-		int heartsId;
+        std::vector<std::set<int>> curReactions = {curLikes, curHearts, curLaughs};
 
-		if(nextNonEmptyLine(myfile, myline)){
-			ss = std::stringstream(myline);
-		while(ss >> heartsId){
-			curHearts.insert(heartsId);
-		}}
+        getline(myfile, myline);
+        bool curIsPublic = (myline.erase(std::remove(myline.begin(), myline.end(), '\t'), myline.end()) == "public");
 
-		std::set<int> curLaughs;
-		int laughsId;
-	
+        getline(myfile, myline);
+        std::string curAuthor = myline;
+        curAuthor.erase(std::remove(curAuthor.begin(), curAuthor.end(), '\t'), curAuthor.end());
 
-		if(nextNonEmptyLine(myfile, myline)){
-			ss = std::stringstream(myline);
-		while(ss >> laughsId){
-			curLaughs.insert(laughsId);
-		}}
-
-		std::vector<std::set<int>> curReactions;
-
-		curReactions.push_back(curLikes);
-		curReactions.push_back(curHearts);
-		curReactions.push_back(curLaughs);
-
-		getline(myfile, myline);
-		std::string temp = myline;
-		temp.erase(std::remove(temp.begin(), temp.end(), '\t'), temp.end());
-		bool curIsPublic = (temp == "public");
-
-		getline(myfile, myline);
-		std::string curAuthor = myline;
-		curAuthor.erase(std::remove(curAuthor.begin(), curAuthor.end(), '\t'),curAuthor.end());
-
-		if(curAuthor != ""){
+        if (curAuthor != "")
             addPost(curOwnerId, curMessage, true, curAuthor, curIsPublic, curReactions);
-		}
-		else{
+        else
             addPost(curOwnerId, curMessage, false, curAuthor, curIsPublic, curReactions);
-		}
-		count++;
-	}
 
-	return 0;
-}
-
-int Network::writePosts(const char* fname){
-	std::ofstream myfile(fname);
-
-	if(!myfile.is_open()){
-		return -1;
-	}
-
-	std::vector<Post*> allPosts;
-
-	for(User* i : users_){
-		std::vector<Post*> curUser = i->getPosts();
-		for(Post* j : curUser){
-            if(j != nullptr){
-			allPosts.push_back(j);
-            }}
-	}
-
-	std::sort (allPosts.begin(), allPosts.end(), Network::mySort);
-
-
-
-	myfile << getTotalPosts() << "\n";
-
-	for(Post* cur : allPosts){
-		myfile << cur->getMessageId() << "\n";
-		myfile << "\t" << cur->getMessage() << "\n";
-		myfile << "\t" << cur->getOwnerId() << "\n";
-
-
-        std::set<int> curLikes = cur->getLikes();
-        myfile << "\t";
-        for (int cur : curLikes){
-            myfile << cur << " ";
-        }
-        myfile << "\n";
-
-        std::set<int> curHearts = cur->getHearts();
-        myfile << "\t";
-        for (int cur : curHearts){
-            myfile << cur << " ";
-        }
-        myfile << "\n";
-
-        std::set<int> curLaughs = cur->getLaughs();
-        myfile << "\t";
-        for (int cur : curLaughs){
-            myfile << cur << " ";
-        }
-        myfile << "\n";
-
-		if(cur->getAuthor() != ""){
-			if(cur->getIsPublic()){
-				myfile << "\tpublic\n";
-			}
-			else{
-				myfile << "\tprivate\n";
-			}
-
-			myfile << "\t" << cur->getAuthor()<<"\n";
-		}
-		else{
-			myfile <<"\n\n";
-		}
-
-
+        count++;
     }
 
-	return 0;
+    return 0;
 }
 
-bool Network::mySort(Post* i, Post* j){
-	return (i->getMessageId() < j->getMessageId());
+// Writes all posts to a file
+int Network::writePosts(const char* fname) {
+    std::ofstream myfile(fname);
+    if (!myfile.is_open()) return -1;
+
+    std::vector<Post*> allPosts;
+    for (User* i : users_) {
+        std::vector<Post*> curUser = i->getPosts();
+        for (Post* j : curUser) if (j != nullptr) allPosts.push_back(j);
+    }
+
+    std::sort(allPosts.begin(), allPosts.end(), Network::mySort);
+
+    myfile << getTotalPosts() << "\n";
+
+    for (Post* cur : allPosts) {
+        myfile << cur->getMessageId() << "\n";
+        myfile << "\t" << cur->getMessage() << "\n";
+        myfile << "\t" << cur->getOwnerId() << "\n";
+
+        for (const auto &reaction : {cur->getLikes(), cur->getHearts(), cur->getLaughs()}) {
+            myfile << "\t";
+            for (int r : reaction) myfile << r << " ";
+            myfile << "\n";
+        }
+
+        if (cur->getAuthor() != "") {
+            myfile << "\t" << (cur->getIsPublic() ? "public" : "private") << "\n";
+            myfile << "\t" << cur->getAuthor() << "\n";
+        } else {
+            myfile << "\n\n";
+        }
+    }
+
+    return 0;
 }
 
-std::vector<User*> Network::getUsers(){
+// Helper for sorting posts by message ID
+bool Network::mySort(Post* i, Post* j) {
+    return (i->getMessageId() < j->getMessageId());
+}
+
+// Returns all users in the network
+std::vector<User*> Network::getUsers() {
     return users_;
 }
 
-void Network::addReaction(int type, int userId, int postId){
-	for(User* i : users_){
-       std::vector<Post*> curPosts = i->getPosts();
-		for(Post* j : curPosts){
-			if(j->getMessageId() == postId){
-				i->addReaction(type, userId, postId);
-			}
-		}
-	}
+// Adds a reaction to a post
+void Network::addReaction(int type, int userId, int postId) {
+    for (User* i : users_) {
+        std::vector<Post*> curPosts = i->getPosts();
+        for (Post* j : curPosts) {
+            if (j->getMessageId() == postId) {
+                i->addReaction(type, userId, postId);
+            }
+        }
+    }
 }
