@@ -1,68 +1,46 @@
 #ifndef USER_H
 #define USER_H
+
 #include <set>
 #include <string>
+#include <vector>
 #include "post.h"
 
+// User class represents a single user in the social network
 class User {
-	friend class Network;
+    friend class Network;  // Network class can access private members
 
-		public:
+public:
+    // --- Member variables ---
+    int id_;                     // Unique user ID
+    std::string name_;           // User's name
+    int year_;                   // Birth year
+    int zip_;                    // Zip code
+    std::set<int> friends_;      // Set of user IDs representing friends
+    std::vector<Post*> messages_; // Vector of pointers to posts created by this user
 
-		//member variables	
-		int id_;
-		std::string name_;
-		int year_;
-		int zip_;
-		std::set<int> friends_;
-		std::vector<Post*> messages_;
+    // --- Constructors ---
+    User();  // Default constructor
+    User(int id, std::string name, int year, int zip, std::set<int> friends); // Parameterized constructor
 
-		//default constructor
-		//Pre: None
-		//Post: default User object created
-		User();
+    // --- Friend management ---
+    void addFriend(int id);       // Add a friend by ID (if not already a friend)
+    void deleteFriend(int id);    // Remove a friend by ID
 
-		//Pre: none
-		//Post: User object created with paramter values
-		User(int id, std::string name, int year, int zip, std::set<int> friends);void addFriend(int id);
+    // --- Accessor methods ---
+    int getId();                  // Return user ID
+    std::string getName();        // Return user name
+    int getYear();                // Return birth year
+    int getZip();                 // Return zip code
+    std::set<int>& getFriends();  // Return reference to friends set
 
-		//pre id is a valid user id
-		//post friend connection has been deleted from set
-		void deleteFriend(int id);
+    // --- Post management ---
+    void addPost(Post* post);                    // Add a post pointer to messages vector
+    std::vector<Post*> getPosts();              // Return vector of all posts
+    std::string getPostsString(int howMany, bool showOnlyPublic); // Return formatted string of posts
 
-		//pre valid User object
-		//post ID of user object returned
-		int getId();
-
-		//pre valid User object
-		//post string returned containing name of User object
-		std::string getName();
-
-		//pre valid User object
-		//post int is returned containing birth year of User
-		int getYear();
-
-		//pre valid User object
-		//post int is returned containing zip code of User
-		int getZip();
-
-		//pre valid User object
-		//post refernece returned to friends_ set
-		std::set<int>& getFriends();
-
-		//pre valid User object
-		//post adds a post pointer to messages vector
-		void addPost(Post* post);
-
-		//pre valid User object
-		//post refernece returned to messages_ vector
-		std::vector<Post*> getPosts();
-
-		//pre valid User object
-		//post returns string of all messages in the User object
-		std::string getPostsString(int howMany, bool showOnlyPublic);
-
-		void addReaction(int type, int postId, int userId);
+    // --- Reactions ---
+    void addReaction(int type, int postId, int userId); // Add reaction to a specific post
 };
 
 #endif
