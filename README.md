@@ -48,6 +48,14 @@ The application models a social network graph internally and persists data using
 - **Qt 5** or **Qt 6** (for GUI components)
 - Standard C++ libraries: `<vector>`, `<string>`, `<set>`, `<iostream>`
 
+## How to Build
+1. Make sure you have **Qt (5 or 6)** installed on your system.
+2. Open the `SocialNetwork.pro` project file in **Qt Creator**.
+3. Build the project:
+    - Click **Build > Build Project** or press `Ctrl + B`.
+4. Run the program:
+    - Click **Run > Start Debugging** or press `Ctrl + R`.
+  
 ## How to Use
 **1. Login**
 - Enter your username from `users.txt`.
@@ -86,12 +94,4 @@ The application models a social network graph internally and persists data using
 - Add profile pictures and richer post content.
 - Add search functionality to quickly find users.
 - Improve friend suggestions using more advanced network analysis.
-
-## How to Build
-1. Make sure you have **Qt (5 or 6)** installed on your system.
-2. Open the `SocialNetwork.pro` project file in **Qt Creator**.
-3. Build the project:
-    - Click **Build > Build Project** or press `Ctrl + B`.
-4. Run the program:
-    - Click **Run > Start Debugging** or press `Ctrl + R`.
 
