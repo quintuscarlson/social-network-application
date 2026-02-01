@@ -11,6 +11,15 @@ This project is a **desktop-based social network simulator** built using **C++**
 
 The application models a social network graph internally and persists data using text files.
 
+## Interface Preview
+
+<img width="796" height="593" alt="SocialNetworkScreenshot1" src="https://github.com/user-attachments/assets/c44e1453-8e04-4765-a63c-c1f0fa91016d" />
+<img width="794" height="592" alt="SocialNetworkScreenshot2" src="https://github.com/user-attachments/assets/c8e7187e-7f2a-4da6-b062-e3718640c7c2" />
+<img width="791" height="592" alt="SocialNetworkScreenshot3" src="https://github.com/user-attachments/assets/d127ff04-8451-4839-9619-ac53c25d8468" />
+
+
+
+
 ## Features
 ### User Management 
 - Users have a **unique ID, name, birth year, zip code,** and a **list of friends.**
